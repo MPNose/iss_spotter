@@ -31,15 +31,28 @@ const fetchCoordsByIP = function(ip, callback) {
     callback(null, {latitude, longitude});
   });
 };
+
+const fetchISSFlyoverTimes = function(coords, callback) {
+  needle.get(`https://iss-flyover.herokuapp.com/json/?lat=${coords.latitude}&lon=${coords.longitude}`, (error, response, body) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    if (response.statusCode !== 200) {
+      callback(Error(`Status code ${response.statusCode} when fetching Times: ${body}`), null)
+      return;
+    }
+    
+    const data = body.response;
+    callback(null, data);
+  });
+};
+
+
 // { latitude: 48.4284207, longitude: -123.3656444 }
 //IP:  24.69.150.78
 
 
 
 
-
-
-
-
-
-module.exports = {fetchMyIP, fetchCoordsByIP};
+module.exports = {fetchMyIP, fetchCoordsByIP, fetchISSFlyoverTimes};
