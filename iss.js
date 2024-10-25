@@ -48,11 +48,35 @@ const fetchISSFlyoverTimes = function(coords, callback) {
   });
 };
 
+const nextISSTimesForMyLocation = function(callback) {
+ fetchMyIP((error, ip) => {
+   if (error) {
+    return callback(error, null);
+   }
+   fetchCoordsByIP(ip, (error, coordinates) => {
+    if (error) {
+      return callback(error, null);
+    }
+    fetchISSFlyoverTimes(coordinates, (error, data) => {
+      if (error) {
+        return callback(error, null);
+      }
+      callback(null, data);
+    });
+   });
+ });
+};
+
 
 // { latitude: 48.4284207, longitude: -123.3656444 }
 //IP:  24.69.150.78
+// { risetime: 1729906927, duration: 666 },
+//   { risetime: 1729943327, duration: 114 },
+//   { risetime: 1729979727, duration: 222 },
+//   { risetime: 1730016127, duration: 629 },
+//   { risetime: 1730052527, duration: 638 }
 
 
 
 
-module.exports = {fetchMyIP, fetchCoordsByIP, fetchISSFlyoverTimes};
+module.exports = {nextISSTimesForMyLocation};
